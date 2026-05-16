@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  /* ─── PURE LIGHT PALETTE ─── */
+  --color-base-bg: #fcfcfd;
+  --color-surface-card: #ffffff;
+  --color-surface-alt: #f8fafc;
+  
+  --color-brand-primary: #10b981;
+  --color-brand-primary-soft: #ecfdf5;
+  --color-brand-secondary: #6366f1;
+  --color-brand-secondary-soft: #eef2ff;
+  --color-brand-rose: #f43f5e;
+  --color-brand-rose-soft: #fff1f2;
+
+  --color-txt-main: #0f172a;
+  --color-txt-sec: #475569;
+  --color-txt-muted: #94a3b8;
+  --color-txt-dim: #cbd5e1;
+
+  --color-border-light: #f1f5f9;
+  --color-border-med: #e2e8f0;
+
+  --font-sans: "Inter", "Outfit", sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --shadow-premium: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+  --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --shadow-glow-primary: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-base-bg text-txt-main antialiased selection:bg-brand-primary/10 selection:text-brand-primary;
+  }
+}
+
+/* ─── BACKGROUND TEXTURE ─── */
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--color-base-bg);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.03) 0px, transparent 50%);
+}
+
+/* ─── PREMIUM CARD ─── */
+.premium-card {
+  @apply bg-surface-card border border-border-light rounded-[24px] shadow-premium transition-all duration-500 ease-out;
+}
+
+.premium-card:hover {
+  @apply shadow-hover border-border-med -translate-y-1;
+}
+
+/* ─── SIDEBAR ITEM ─── */
+.nav-item {
+  @apply flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-300;
+}
+
+.nav-item-active {
+  @apply bg-brand-primary-soft text-brand-primary shadow-sm;
+}
+
+.nav-item-inactive {
+  @apply text-txt-sec hover:bg-surface-alt hover:text-txt-main;
+}
+
+/* ─── ANIMATIONS ─── */
+.reveal-up {
+  animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stagger-item {
+  opacity: 0;
+}
+
+.stagger-item:nth-child(1) { animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; }
+.stagger-item:nth-child(2) { animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; }
+.stagger-item:nth-child(3) { animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; }
+.stagger-item:nth-child(4) { animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards; }
+
+/* ─── CUSTOM SCROLLBAR ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+}
+
+/* ─── BUTTONS ─── */
+.btn-primary {
+  @apply px-6 py-2.5 bg-brand-primary text-white rounded-xl font-semibold shadow-glow-primary hover:bg-brand-primary/90 active:scale-95 transition-all;
+}
+
+.btn-ghost {
+  @apply px-4 py-2 text-txt-sec hover:bg-surface-alt hover:text-txt-main rounded-xl transition-all;
+}

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDG Capital — Analyse des États Financiers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00875a;
+    --green-dark: #006644;
+    --black: #0f172a;
+    --black-soft: #334155;
+    --white: #ffffff;
+    --bg: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --surface: #ffffff;
+    --surface-hover: #f8fafc;
+    --danger: #ef4444;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Geist', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── SUBTLE PATTERN ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%2300875a' stroke-width='0.4' opacity='0.03'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30Z'/%3E%3Cpath d='M30 10 L50 30 L30 50 L10 30Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .app { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; padding: 0 24px 60px; }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 0 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-group { display: flex; align-items: center; gap: 16px; }
+  .logo-mark {
+    width: 44px; height: 44px;
+    background: var(--green);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 135, 90, 0.15);
+  }
+  .logo-mark span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .logo-text h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.01em;
+  }
+  .logo-text p {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .header-badge {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── UPLOAD ZONE ── */
+  .upload-section { padding: 48px 0 36px; }
+  .upload-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: block;
+  }
+  .drop-zone {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 52px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--green);
+    background: #fcfdfd;
+  }
+  .drop-icon {
+    width: 52px; height: 52px;
+    margin: 0 auto 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .drop-icon svg { width: 22px; height: 22px; stroke: var(--gold); fill: none; stroke-width: 1.5; }
+  .drop-zone h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .drop-zone p { color: var(--text-muted); font-size: 13px; }
+  .drop-zone .browse-link { color: var(--gold); cursor: pointer; border-bottom: 0.5px solid var(--gold-dim); }
+  #file-input { display: none; }
+  .file-selected {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: rgba(201,168,76,0.08);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+  }
+  .file-selected.visible { display: flex; }
+  .file-name { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold-light); flex: 1; }
+  .file-size { font-size: 11px; color: var(--text-muted); }
+
+  .analyze-btn {
+    margin-top: 24px;
+    width: 100%;
+    padding: 16px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Geist', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: none;
+  }
+  .analyze-btn.visible { display: block; }
+  .analyze-btn:hover { background: #000; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .analyze-btn:active { transform: scale(0.99); }
+  .analyze-btn:disabled {
+    background: var(--gold-dim);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ── LOADING ── */
+  .loading-overlay {
+    display: none;
+    padding: 48px;
+    text-align: center;
+  }
+  .loading-overlay.visible { display: block; }
+  .loading-steps { list-style: none; text-align: left; max-width: 320px; margin: 32px auto 0; }
+  .loading-steps li {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: color 0.3s;
+  }
+  .loading-steps li.active { color: var(--text-primary); }
+  .loading-steps li.done { color: var(--success); }
+  .step-icon { width: 18px; height: 18px; flex-shrink: 0; }
+  .spinner {
+    width: 44px; height: 44px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    margin: 0 auto;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── ERROR ── */
+  .error-box {
+    display: none;
+    margin-top: 24px;
+    padding: 16px 20px;
+    border: 0.5px solid rgba(224,82,82,0.4);
+    border-radius: var(--radius);
+    background: rgba(224,82,82,0.08);
+    color: var(--danger);
+    font-size: 13px;
+  }
+  .error-box.visible { display: block; }
+
+  /* ── RESULTS ── */
+  #results { display: none; }
+  #results.visible { display: block; }
+
+  .results-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 40px 0 24px;
+    border-top: 0.5px solid var(--border);
+  }
+  .results-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .results-header h2 span { color: var(--gold); display: block; }
+  .results-meta { text-align: right; font-size: 11px; color: var(--text-muted); line-height: 1.8; }
+  .results-meta strong { color: var(--text-secondary); font-weight: 400; }
+
+  /* ── EXECUTIVE SUMMARY ── */
+  .summary-card {
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: #ffffff;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  }
+  .summary-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 120px;
+    color: rgba(201,168,76,0.12);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .summary-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .summary-label::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--border);
+  }
+  .summary-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--cream);
+    font-style: italic;
+  }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 0.5px; background: var(--border); }
+
+  /* ── KPI GRID ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+  .kpi-card:hover { border-color: var(--border-strong); }
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+  .kpi-unit { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── RATIOS TABLE ── */
+  .ratios-grid {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .ratio-row {
+    display: grid;
+    grid-template-columns: 1fr 140px 200px;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+  .ratio-row:hover { border-color: var(--green); transform: translateX(4px); }
+  .ratio-info { }
+  .ratio-name { font-size: 13px; color: var(--text-primary); margin-bottom: 2px; }
+  .ratio-formula {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .ratio-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 17px;
+    font-weight: 500;
+    text-align: right;
+  }
+  .ratio-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    text-align: center;
+    border: 0.5px solid transparent;
+  }
+  .badge-good { background: rgba(76,175,125,0.12); color: #4caf7d; border-color: rgba(76,175,125,0.3); }
+  .badge-warn { background: rgba(232,160,48,0.12); color: #e8a030; border-color: rgba(232,160,48,0.3); }
+  .badge-bad  { background: rgba(224,82,82,0.12);  color: #e05252; border-color: rgba(224,82,82,0.3); }
+  .badge-neutral { background: rgba(154,172,186,0.1); color: var(--text-muted); border-color: var(--border); }
+
+  /* ── BILAN TABLE ── */
+  .bilan-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 680px) { .bilan-grid { grid-template-columns: 1fr; } .ratio-row { grid-template-columns: 1fr 100px; } .ratio-badge { display: none; } }
+  .bilan-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .bilan-card-header {
+    padding: 12px 18px;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
+  .bilan-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 18px;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 12px;
+  }
+  .bilan-row:last-child { border-bottom: none; }
+  .bilan-row.total {
+    background: rgba(201,168,76,0.06);
+    font-weight: 500;
+    color: var(--gold-light);
+  }
+  .bilan-row-label { color: var(--text-secondary); }
+  .bilan-row-value { font-family: 'DM Mono', monospace; color: var(--text-primary); }
+
+  /* ── RESET BTN ── */
+  .reset-btn {
+    margin-top: 40px;
+    padding: 12px 28px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Geist', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  footer span { letter-spacing: 0.06em; }
+
+  /* ── ANIMATIONS ── */
+  .fade-in { animation: fadeIn 0.5s ease forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .stagger > * { opacity: 0; animation: fadeIn 0.4s ease forwards; }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.19s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.26s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.33s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.40s; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-group">
+      <div class="logo-mark"><span>C</span></div>
+      <div class="logo-text">
+        <h1>CDG Capital</h1>
+        <p>Intelligence Financière — Powered by Claude</p>
+      </div>
+    </div>
+    <div class="header-badge">
+      <div class="badge-dot"></div>
+      Agent Actif
+    </div>
+  </header>
+
+  <!-- UPLOAD SECTION -->
+  <section class="upload-section" id="upload-section">
+    <span class="upload-label">Analyse d'État Financier</span>
+
+    <div class="drop-zone" id="drop-zone">
+      <div class="drop-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      </div>
+      <h2>Déposez votre bilan ici</h2>
+      <p>Format PDF — Bilan PCGE, Rapport Annuel, États de Synthèse<br>
+        ou <span class="browse-link" id="browse-trigger">parcourir vos fichiers</span>
+      </p>
+      <input type="file" id="file-input" accept=".pdf">
+    </div>
+
+    <div class="file-selected" id="file-selected">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold);flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="file-name" id="file-name-display">—</span>
+      <span class="file-size" id="file-size-display"></span>
+    </div>
+
+    <button class="analyze-btn" id="analyze-btn" disabled>
+      Lancer l'analyse financière
+    </button>
+
+    <div class="error-box" id="error-box"></div>
+  </section>
+
+  <!-- LOADING -->
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:20px;color:var(--text-secondary);font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;">Analyse en cours…</p>
+    <ul class="loading-steps" id="loading-steps">
+      <li id="step-1">
+        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Extraction du texte PDF
+      </li>
+      <li id="step-2">
+        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+        Structuration Actif / Passif / CPC
+      </li>
+      <li id="step-3">
+        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Calcul des ratios financiers
+      </li>
+      <li id="step-4">
+        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Génération du commentaire exécutif
+      </li>
+    </ul>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+
+    <div class="results-header">
+      <h2 id="results-company-name">
+        Atlas Industrie Maroc S.A.
+        <span id="results-fiscal-year">Exercice 2023</span>
+      </h2>
+      <div class="results-meta">
+        <div><strong>Fichier :</strong> <span id="results-filename">—</span></div>
+        <div><strong>Devise :</strong> <span id="results-currency">MAD</span></div>
+        <div><strong>Analysé le :</strong> <span id="results-date">—</span></div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-card fade-in">
+      <div class="summary-label">Synthèse exécutive — Claude</div>
+      <p class="summary-text" id="summary-text">—</p>
+    </div>
+
+    <!-- KPIs -->
+    <div class="section-title">Indicateurs clés</div>
+    <div class="kpi-grid stagger" id="kpi-grid">
+      <!-- filled by JS -->
+    </div>
+
+    <!-- Ratios -->
+    <div class="section-title">Ratios financiers</div>
+    <div class="ratios-grid stagger" id="ratios-grid">
+      <!-- filled by JS -->
+    </div>
+
+    <!-- Bilan -->
+    <div class="section-title">Structure bilancielle</div>
+    <div class="bilan-grid fade-in" id="bilan-grid">
+      <!-- filled by JS -->
+    </div>
+
+    <button class="reset-btn" id="reset-btn">↩ Nouvelle analyse</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>CDG Capital — Agent IA d'Analyse Financière</span>
+    <span>PCGE · Normes Marocaines · Claude Sonnet</span>
+  </footer>
+</div>
+
+<script>
+const API = 'http://localhost:8000';
+
+// ── DOM refs ──────────────────────────────────────────────────────────────
+const dropZone      = document.getElementById('drop-zone');
+const fileInput     = document.getElementById('file-input');
+const browseTrigger = document.getElementById('browse-trigger');
+const fileSelected  = document.getElementById('file-selected');
+const fileNameEl    = document.getElementById('file-name-display');
+const fileSizeEl    = document.getElementById('file-size-display');
+const analyzeBtn    = document.getElementById('analyze-btn');
+const errorBox      = document.getElementById('error-box');
+const loadingEl     = document.getElementById('loading-overlay');
+const resultsEl     = document.getElementById('results');
+const uploadSection = document.getElementById('upload-section');
+const resetBtn      = document.getElementById('reset-btn');
+
+let selectedFile = null;
+
+// ── File selection ────────────────────────────────────────────────────────
+browseTrigger.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('click', (e) => { if (e.target !== browseTrigger) fileInput.click(); });
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) setFile(fileInput.files[0]);
+});
+
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type === 'application/pdf') setFile(f);
+  else showError('Seuls les fichiers PDF sont acceptés.');
+});
+
+function setFile(f) {
+  selectedFile = f;
+  fileNameEl.textContent = f.name;
+  fileSizeEl.textContent = formatBytes(f.size);
+  fileSelected.classList.add('visible');
+  analyzeBtn.classList.add('visible');
+  analyzeBtn.disabled = false;
+  hideError();
+}
+
+function formatBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+  return (b / 1048576).toFixed(1) + ' MB';
+}
+
+// ── Analysis ──────────────────────────────────────────────────────────────
+analyzeBtn.addEventListener('click', runAnalysis);
+
+async function runAnalysis() {
+  if (!selectedFile) return;
+  hideError();
+  analyzeBtn.disabled = true;
+  uploadSection.style.display = 'none';
+  loadingEl.classList.add('visible');
+
+  // Animate steps with delays
+  animateStep('step-1', 200);
+  animateStep('step-2', 2500);
+  animateStep('step-3', 5500);
+  animateStep('step-4', 7500);
+
+  const fd = new FormData();
+  fd.append('file', selectedFile);
+
+  try {
+    const resp = await fetch(API + '/analyze', { method: 'POST', body: fd });
+    const data = await resp.json();
+
+    if (!resp.ok) throw new Error(data.detail || 'Erreur serveur');
+
+    loadingEl.classList.remove('visible');
+    renderResults(data);
+
+  } catch (err) {
+    loadingEl.classList.remove('visible');
+    uploadSection.style.display = 'block';
+    analyzeBtn.disabled = false;
+    showError('Erreur : ' + err.message);
+  }
+}
+
+let stepTimers = [];
+function animateStep(id, delay) {
+  const t = setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+    const prev = el && el.previousElementSibling;
+    if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+  }, delay);
+  stepTimers.push(t);
+}
+
+// ── Render results ────────────────────────────────────────────────────────
+function renderResults(data) {
+  const fin  = data.financials;
+  const bil  = fin.bilan;
+  const cpc  = fin.cpc;
+  const ratios = data.ratios;
+
+  // Header
+  document.getElementById('results-company-name').innerHTML =
+    (fin.company_name || 'Société Non Identifiée') +
+    '<span>' + (fin.fiscal_year ? 'Exercice ' + fin.fiscal_year : 'Exercice N/D') + '</span>';
+  document.getElementById('results-filename').textContent = data.source_file;
+  document.getElementById('results-currency').textContent = fin.currency;
+  document.getElementById('results-date').textContent = new Date().toLocaleDateString('fr-MA', { day:'numeric', month:'long', year:'numeric' });
+
+  // Summary
+  document.getElementById('summary-text').textContent = data.executive_summary;
+
+  // KPIs
+  const kpiGrid = document.getElementById('kpi-grid');
+  kpiGrid.innerHTML = '';
+  const kpis = [
+    { label: "Chiffre d'Affaires", value: cpc.revenue, unit: fin.currency },
+    { label: "EBITDA (EBE)",        value: cpc.ebitda,  unit: fin.currency },
+    { label: "Résultat Net",         value: cpc.net_income, unit: fin.currency },
+    { label: "Total Actif",          value: bil.total_assets, unit: fin.currency },
+    { label: "Capitaux Propres",     value: bil.total_equity, unit: fin.currency },
+    { label: "Dettes Totales",       value: bil.total_debt, unit: fin.currency },
+  ];
+  kpis.forEach(k => {
+    const card = document.createElement('div');
+    card.className = 'kpi-card';
+    card.innerHTML = `
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value != null ? formatNum(k.value) : '—'}</div>
+      <div class="kpi-unit">${k.value != null ? k.unit : ''}</div>
+    `;
+    kpiGrid.appendChild(card);
+  });
+
+  // Ratios
+  const ratiosGrid = document.getElementById('ratios-grid');
+  ratiosGrid.innerHTML = '';
+  Object.values(ratios).forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'ratio-row';
+    const val = r.formatted || (r.value != null ? r.value.toFixed(4) : '—');
+    const badgeClass = getBadgeClass(r.interpretation);
+    row.innerHTML = `
+      <div class="ratio-info">
+        <div class="ratio-name">${r.label}</div>
+        <div class="ratio-formula">${r.formula}</div>
+      </div>
+      <div class="ratio-value" style="color:${getValueColor(r.interpretation)}">${val}</div>
+      <div class="ratio-badge ${badgeClass}">${r.interpretation || '—'}</div>
+    `;
+    ratiosGrid.appendChild(row);
+  });
+
+  // Bilan
+  const bilanGrid = document.getElementById('bilan-grid');
+  bilanGrid.innerHTML = `
+    <div class="bilan-card">
+      <div class="bilan-card-header">Actif</div>
+      ${bilanRow('Actif Immobilisé', bil.non_current_assets, fin.currency)}
+      ${bilanRow('Actif Circulant', bil.current_assets, fin.currency)}
+      ${bilanRow('Total Actif', bil.total_assets, fin.currency, true)}
+    </div>
+    <div class="bilan-card">
+      <div class="bilan-card-header">Passif</div>
+      ${bilanRow('Capitaux Propres', bil.total_equity, fin.currency)}
+      ${bilanRow('Dettes MLT', bil.non_current_liabilities, fin.currency)}
+      ${bilanRow('Passif Circulant', bil.current_liabilities, fin.currency)}
+      ${bilanRow('Dettes Totales', bil.total_debt, fin.currency, true)}
+    </div>
+    <div class="bilan-card">
+      <div class="bilan-card-header">Compte de Produits et Charges</div>
+      ${bilanRow("Chiffre d'Affaires", cpc.revenue, fin.currency)}
+      ${bilanRow('EBITDA / EBE', cpc.ebitda, fin.currency)}
+      ${bilanRow("Résultat d'Exploitation", cpc.ebit, fin.currency)}
+      ${bilanRow('Résultat Net', cpc.net_income, fin.currency, true)}
+    </div>
+  `;
+
+  resultsEl.classList.add('visible');
+}
+
+function bilanRow(label, value, currency, isTotal = false) {
+  return `<div class="bilan-row${isTotal ? ' total' : ''}">
+    <span class="bilan-row-label">${label}</span>
+    <span class="bilan-row-value">${value != null ? formatNum(value) + ' ' + currency : '—'}</span>
+  </div>`;
+}
+
+function formatNum(n) {
+  return new Intl.NumberFormat('fr-MA', { maximumFractionDigits: 0 }).format(n);
+}
+
+function getBadgeClass(interp) {
+  if (!interp) return 'badge-neutral';
+  const i = interp.toLowerCase();
+  if (i.includes('⚠') || i.includes('risque') || i.includes('faible') || i.includes('déficitaire')) return 'badge-bad';
+  if (i.includes('correcte') || i.includes('acceptable') || i.includes('satisfaisante')) return 'badge-warn';
+  if (i.includes('excellent') || i.includes('solide') || i.includes('très bonne') || i.includes('solid')) return 'badge-good';
+  if (i.includes('insuffisant')) return 'badge-bad';
+  return 'badge-neutral';
+}
+
+function getValueColor(interp) {
+  const cls = getBadgeClass(interp);
+  if (cls === 'badge-good') return 'var(--success)';
+  if (cls === 'badge-warn') return 'var(--warning)';
+  if (cls === 'badge-bad')  return 'var(--danger)';
+  return 'var(--text-primary)';
+}
+
+// ── Error & Reset ─────────────────────────────────────────────────────────
+function showError(msg) { errorBox.textContent = msg; errorBox.classList.add('visible'); }
+function hideError()    { errorBox.classList.remove('visible'); }
+
+resetBtn.addEventListener('click', () => {
+  resultsEl.classList.remove('visible');
+  uploadSection.style.display = 'block';
+  fileSelected.classList.remove('visible');
+  analyzeBtn.classList.remove('visible');
+  analyzeBtn.disabled = true;
+  fileInput.value = '';
+  selectedFile = null;
+  hideError();
+  document.getElementById('kpi-grid').innerHTML = '';
+  document.getElementById('ratios-grid').innerHTML = '';
+  document.getElementById('bilan-grid').innerHTML = '';
+  // reset loading steps
+  ['step-1','step-2','step-3','step-4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('active','done'); }
+  });
+  stepTimers.forEach(clearTimeout);
+  stepTimers = [];
+});
+</script>
+</body>
+</html>
