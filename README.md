@@ -1,5 +1,11 @@
 # 🏛️ CDG Capital — Financial Intelligence Terminal
 
+## 🎥 Démo Vidéo
+
+<a href="[https://drive.google.com/file/d/1OlqrJXaeUx9CZo8q6Yf1MSiNUXk-3CV3/view?usp=sharing](https://drive.google.com/file/d/1OlqrJXaeUx9CZo8q6Yf1MSiNUXk-3CV3/view?usp=sharing)" target="_blank">
+  <img src="https://img.youtube.com/vi/YOUTUBE_ID_OR_ANY_IMAGE_URL/maxresdefault.jpg" alt="CDG Capital Terminal Demo" width="100%" style="border-radius: 8px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);"/>
+</a>
+
 [![Tech Stack](https://img.shields.io/badge/Stack-FastAPI_%7C_React_%7C_Claude_3.5-emerald)](https://cdgcapital.ma)
 [![License](https://img.shields.io/badge/License-Proprietary-slate)](https://cdgcapital.ma)
 
