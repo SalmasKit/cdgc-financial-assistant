@@ -1,10 +1,17 @@
 # 🏛️ CDG Capital — Financial Intelligence Terminal
 
-[![Démo Vidéo](https://img.shields.io/badge/🎥_Démo_Vidéo-Google_Drive-blue?style=flat&logo=google-drive&logoColor=white)](https://drive.google.com/file/d/1OlqrJXaeUx9CZo8q6Yf1MSiNUXk-3CV3/view?usp=sharing)
 [![Tech Stack](https://img.shields.io/badge/Stack-FastAPI_%7C_React_%7C_Claude_3.5-emerald)](https://cdgcapital.ma)
 [![License](https://img.shields.io/badge/License-Proprietary-slate)](https://cdgcapital.ma)
 
 Le **Terminal d'Intelligence Financière CDG Capital** est une plateforme de pointe conçue pour automatiser l'analyse des états financiers (comptes sociaux et consolidés) selon les normes marocaines (PCGE). Grâce à l'intégration de l'IA générative (Claude 3.5), il transforme des rapports PDF complexes en insights stratégiques actionnables.
+
+---
+
+<p align="center">
+  <a href="https://drive.google.com/file/d/1OlqrJXaeUx9CZo8q6Yf1MSiNUXk-3CV3/view?usp=sharing" target="_blank">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20REGARDER%20LA%20D%C3%89MO%20VID%C3%89O%20%20%5BGoogle%20Drive%5D-2563EB?style=for-the-badge&logo=google-drive&logoColor=white" alt="Regarder la Démo Vidéo" height="45"/>
+  </a>
+</p>
 
 ---
 
